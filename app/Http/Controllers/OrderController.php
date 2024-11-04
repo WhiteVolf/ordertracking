@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Notifications\OrderCreatedNotification;
 use App\Notifications\OrderStatusUpdatedNotification;
 use Illuminate\Support\Facades\Notification;
+use App\Services\ReverbService;
 
 /**
  * @OA\Info(title="Order API", version="1.0")
@@ -19,6 +20,8 @@ use Illuminate\Support\Facades\Notification;
  */
 class OrderController extends Controller
 {
+    public function __construct(protected ReverbService $reverbService) {}
+    
     /**
      * @OA\Get(
      *     path="/api/orders",
@@ -173,6 +176,13 @@ class OrderController extends Controller
         // Відправка сповіщення про створення замовлення
         Notification::send(Auth::user(), new OrderCreatedNotification($order));
 
+        // Відправка повідомлення про створення замовлення
+        $this->reverbService->sendNotification('order.created', [
+            'order_id' => $order->id,
+            'status' => $order->status,
+            'user_id' => $order->user_id,
+        ]);
+
         return response()->json($order, 201);
     }
 
@@ -228,6 +238,12 @@ class OrderController extends Controller
         // Відправка сповіщення про зміну статусу, якщо він змінений
         if ($request->status && $request->status !== $oldStatus) {
             Notification::send(Auth::user(), new OrderStatusUpdatedNotification($order));
+            
+            $this->reverbService->sendNotification('order.updated', [
+                'order_id' => $order->id,
+                'status' => $order->status,
+                'user_id' => $order->user_id,
+            ]);
         }
 
         return response()->json($order, 200);
