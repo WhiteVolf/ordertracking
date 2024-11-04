@@ -20,66 +20,69 @@ Order Tracking System
    git clone git@github.com:WhiteVolf/ordertracking.git
    cd ordertracking
 
-Встановлення залежностей:
+2. **Встановлення залежностей**:
+    ```bash
+    composer install
 
-composer install
+3. **Конфігурація середовища**: 
+    Створіть .env файл, скопіювавши .env.example, та налаштуйте такі параметри:
 
-Конфігурація середовища: Створіть .env файл, скопіювавши .env.example, та налаштуйте такі параметри:
+    ```env
+    APP_KEY= # згенеруйте новий ключ
+    DB_DATABASE= # назва бази даних
+    DB_USERNAME= # користувач бази даних
+    DB_PASSWORD= # пароль бази даних
+    JWT_SECRET= # згенеруйте новий секрет для JWT
+    REDIS_HOST=127.0.0.1
+    REDIS_PASSWORD=null
+    REDIS_PORT=6379
 
-env
-APP_KEY= # згенеруйте новий ключ
-DB_DATABASE= # назва бази даних
-DB_USERNAME= # користувач бази даних
-DB_PASSWORD= # пароль бази даних
-JWT_SECRET= # згенеруйте новий секрет для JWT
-REDIS_HOST=127.0.0.1
-REDIS_PASSWORD=null
-REDIS_PORT=6379
+4. **Генеруйте новий APP_KEY**:
+    ```bash
+    php artisan key:generate
 
-Генеруйте новий APP_KEY:
+5. **Міграції та сидери**:
+    Створіть таблиці бази даних та додайте необхідні сидери:
+    ```bash
+    php artisan migrate --seed
 
-php artisan key:generate
+6. **Laravel Horizon**: 
+    Запустіть Horizon для моніторингу черг:
+    ```bash
+    php artisan horizon
 
-Міграції та сидери: Створіть таблиці бази даних та додайте необхідні сидери:
+## Запуск проєкту
 
-php artisan migrate --seed
+    Для локального запуску сервера виконайте:
+    ```bash
+    php artisan serve
 
-Laravel Horizon: Запустіть Horizon для моніторингу черг:
+## API Роутинг
+    POST /api/auth/register – Реєстрація нового користувача
+    POST /api/auth/login – Авторизація користувача та отримання JWT токена
+    GET /api/orders – Отримати список замовлень (з пагінацією та фільтрацією)
+    POST /api/orders – Створити нове замовлення
+    GET /api/orders/{id} – Отримати конкретне замовлення
+    PUT /api/orders/{id} – Оновити замовлення
+    DELETE /api/orders/{id} – Видалити замовлення
+    GET /api/orders/export/{format} – Експорт замовлень у форматі CSV або Excel (format = csv або excel)
 
-php artisan horizon
+## Тестування
 
-Запуск проєкту
+    Для запуску юніт тестів виконайте:
+    ```bash
+    php artisan test
+    Тести охоплюють всі ключові функції, включаючи авторизацію, CRUD-операції для замовлень, експорт і сповіщення.
 
-Для локального запуску сервера виконайте:
+## Horizon
+    Laravel Horizon забезпечує моніторинг черг. Ви можете переглянути статус черг за адресою:
+    http://localhost/horizon
 
-php artisan serve
+## Експорт Замовлень
+    Для експорту замовлень API підтримує формат CSV та Excel. Просто виконайте запит на /api/orders/export/csv або /api/orders/export/excel.
 
-API Роутинг
-POST /api/auth/register – Реєстрація нового користувача
-POST /api/auth/login – Авторизація користувача та отримання JWT токена
-GET /api/orders – Отримати список замовлень (з пагінацією та фільтрацією)
-POST /api/orders – Створити нове замовлення
-GET /api/orders/{id} – Отримати конкретне замовлення
-PUT /api/orders/{id} – Оновити замовлення
-DELETE /api/orders/{id} – Видалити замовлення
-GET /api/orders/export/{format} – Експорт замовлень у форматі CSV або Excel (format = csv або excel)
+## Сповіщення
+    Система використовує Reverb для сповіщень. Сповіщення надсилаються при створенні замовлення або зміні його статусу.
 
-Тестування
-
-Для запуску юніт тестів виконайте:
-
-php artisan test
-Тести охоплюють всі ключові функції, включаючи авторизацію, CRUD-операції для замовлень, експорт і сповіщення.
-
-Horizon
-Laravel Horizon забезпечує моніторинг черг. Ви можете переглянути статус черг за адресою:
-
-http://localhost/horizon
-Експорт Замовлень
-Для експорту замовлень API підтримує формат CSV та Excel. Просто виконайте запит на /api/orders/export/csv або /api/orders/export/excel.
-
-Сповіщення
-Система використовує Reverb для сповіщень. Сповіщення надсилаються при створенні замовлення або зміні його статусу.
-
-Ліцензія
-Цей проєкт ліцензований під ліцензією MIT.
+## Ліцензія
+    Цей проєкт ліцензований під ліцензією MIT.
