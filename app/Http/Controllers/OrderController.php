@@ -9,8 +9,59 @@ use App\Notifications\OrderCreatedNotification;
 use App\Notifications\OrderStatusUpdatedNotification;
 use Illuminate\Support\Facades\Notification;
 
+/**
+ * @OA\Info(title="Order API", version="1.0")
+ * 
+ * @OA\Tag(
+ *     name="Orders",
+ *     description="API Endpoints of Orders"
+ * )
+ */
 class OrderController extends Controller
 {
+    /**
+     * @OA\Get(
+     *     path="/api/orders",
+     *     summary="Get list of orders",
+     *     tags={"Orders"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="status",
+     *         in="query",
+     *         description="Filter orders by status",
+     *         required=false,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Parameter(
+     *         name="min_amount",
+     *         in="query",
+     *         description="Minimum order amount",
+     *         required=false,
+     *         @OA\Schema(type="number")
+     *     ),
+     *     @OA\Parameter(
+     *         name="max_amount",
+     *         in="query",
+     *         description="Maximum order amount",
+     *         required=false,
+     *         @OA\Schema(type="number")
+     *     ),
+     *     @OA\Parameter(
+     *         name="product_name",
+     *         in="query",
+     *         description="Filter orders by product name",
+     *         required=false,
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(type="object")
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=404, description="Not Found")
+     * )
+     */
     // Отримати всі замовлення для авторизованого користувача
     public function index()
     {
@@ -43,6 +94,28 @@ class OrderController extends Controller
         return response()->json($orders, 200);
     }
 
+    /**
+     * @OA\Get(
+     *     path="/api/orders/{id}",
+     *     summary="Get order by ID",
+     *     tags={"Orders"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Order ID",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Successful operation",
+     *         @OA\JsonContent(type="object")
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=404, description="Not Found")
+     * )
+     */
     // Показати окреме замовлення
     public function show($id)
     {
@@ -55,6 +128,30 @@ class OrderController extends Controller
         return response()->json($order, 200);
     }
     
+    /**
+     * @OA\Post(
+     *     path="/api/orders",
+     *     summary="Create a new order",
+     *     tags={"Orders"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"product_name", "order_number", "amount", "status"},
+     *             @OA\Property(property="product_name", type="string", example="Test Product"),
+     *             @OA\Property(property="order_number", type="string", example="ORD123"),
+     *             @OA\Property(property="amount", type="number", example=100),
+     *             @OA\Property(property="status", type="string", example="new")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Order created successfully",
+     *         @OA\JsonContent(type="object")
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized")
+     * )
+     */
     // Метод для створення нового замовлення
     public function store(Request $request)
     {
@@ -79,6 +176,36 @@ class OrderController extends Controller
         return response()->json($order, 201);
     }
 
+    /**
+     * @OA\Put(
+     *     path="/api/orders/{id}",
+     *     summary="Update an order",
+     *     tags={"Orders"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Order ID",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="product_name", type="string", example="Updated Product"),
+     *             @OA\Property(property="amount", type="number", example=150),
+     *             @OA\Property(property="status", type="string", example="shipped")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Order updated successfully",
+     *         @OA\JsonContent(type="object")
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=404, description="Not Found")
+     * )
+     */
     // Метод для редагування існуючого замовлення
     public function update(Request $request, $id)
     {
@@ -106,6 +233,28 @@ class OrderController extends Controller
         return response()->json($order, 200);
     }
 
+    /**
+     * @OA\Delete(
+     *     path="/api/orders/{id}",
+     *     summary="Delete an order",
+     *     tags={"Orders"},
+     *     security={{"bearerAuth":{}}},
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="path",
+     *         description="Order ID",
+     *         required=true,
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Order deleted successfully",
+     *         @OA\JsonContent(type="object")
+     *     ),
+     *     @OA\Response(response=401, description="Unauthorized"),
+     *     @OA\Response(response=404, description="Not Found")
+     * )
+     */
     // Видалити замовлення
     public function destroy($id)
     {
