@@ -13,4 +13,6 @@ Route::middleware('auth:api')->group(function () {
     Route::post('orders', [OrderController::class, 'store']);          // Створити нове замовлення
     Route::put('orders/{id}', [OrderController::class, 'update']);     // Оновити замовлення
     Route::delete('orders/{id}', [OrderController::class, 'destroy']); // Видалити замовлення
+    Route::get('/orders/export-excel', [OrderController::class, 'exportExcel']);
+    Route::get('/orders/export-csv', [OrderController::class, 'exportCsv']);
 });

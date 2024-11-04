@@ -9,6 +9,8 @@ use App\Notifications\OrderCreatedNotification;
 use App\Notifications\OrderStatusUpdatedNotification;
 use Illuminate\Support\Facades\Notification;
 use App\Services\ReverbService;
+use App\Exports\OrdersExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 /**
  * @OA\Info(title="Order API", version="1.0")
@@ -283,5 +285,21 @@ class OrderController extends Controller
         $order->delete();
 
         return response()->json(['message' => 'Order deleted successfully'], 200);
+    }
+
+    /**
+     * Експорт замовлень у форматі Excel.
+     */
+    public function exportExcel()
+    {
+        return Excel::download(new OrdersExport, 'orders.xlsx');
+    }
+
+    /**
+     * Експорт замовлень у форматі CSV.
+     */
+    public function exportCsv()
+    {
+        return Excel::download(new OrdersExport, 'orders.csv');
     }
 }
