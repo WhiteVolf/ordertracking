@@ -153,4 +153,37 @@ class OrderControllerTest extends TestCase
 
         $response->assertStatus(401); // Неавторизований доступ заборонений
     }
+
+    /** @test */
+    public function authenticated_user_can_export_orders_to_excel()
+    {
+        $this->actingAs($this->user);
+
+        $response = $this->get('/api/orders/export-excel');
+
+        $response->assertStatus(200);
+        $response->assertHeader('content-type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    }
+
+    /** @test */
+    public function authenticated_user_can_export_orders_to_csv()
+    {
+        $this->actingAs($this->user);
+
+        $response = $this->get('/api/orders/export-csv');
+
+        $response->assertStatus(200);
+        $response->assertHeader('content-type', 'text/csv');
+    }
+
+    /** @test */
+    public function authenticated_user_can_export_orders_to_pdf()
+    {
+        $this->actingAs($this->user);
+
+        $response = $this->get('/api/orders/export-pdf');
+
+        $response->assertStatus(200);
+        $response->assertHeader('content-type', 'application/pdf');
+    }
 }

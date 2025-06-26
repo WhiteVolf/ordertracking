@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use App\Models\UserProfile;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -53,6 +54,14 @@ class User extends Authenticatable implements JWTSubject
     public function orders()
     {
         return $this->hasMany(Order::class);
+    }
+
+    /**
+     * Зв’язок користувача з профілем (один до одного)
+     */
+    public function profile()
+    {
+        return $this->hasOne(UserProfile::class);
     }
 
     // Реалізація методів для JWT
