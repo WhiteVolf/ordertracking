@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Notification;
 use App\Services\ReverbService;
 use App\Exports\OrdersExport;
 use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\Excel as ExcelFormat;
 
 /**
  * @OA\Info(title="Order API", version="1.0")
@@ -68,7 +69,7 @@ class OrderController extends Controller
      * )
      */
     // Отримати всі замовлення для авторизованого користувача
-    public function index()
+    public function index(Request $request)
     {
         // Отримуємо всі замовлення для авторизованого користувача
         $query = Order::where('user_id', Auth::id());
@@ -301,5 +302,13 @@ class OrderController extends Controller
     public function exportCsv()
     {
         return Excel::download(new OrdersExport, 'orders.csv');
+    }
+
+    /**
+     * Експорт замовлень у форматі PDF.
+     */
+    public function exportPdf()
+    {
+        return Excel::download(new OrdersExport, 'orders.pdf', ExcelFormat::DOMPDF);
     }
 }
