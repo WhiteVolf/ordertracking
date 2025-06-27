@@ -10,6 +10,8 @@ Order Tracking System
 - **Обмеження доступу**: Користувачі бачать лише свої замовлення.
 - **Сповіщення**: Відправка сповіщень про створення та зміну статусу замовлення через Reverb.
 - **Експорт замовлень**: Можливість експорту у формат CSV та Excel.
+- **Профілі користувачів**: Збереження ПІБ, контактних даних, адрес та національності.
+- **Каталог товарів**: CRUD для товарів з назвою, описом та ціною.
 - **Підтримка черг**: Laravel Horizon для моніторингу черг Redis.
 - **Пагінація та фільтрація**: Підтримка пагінації та фільтрації за статусом у списку замовлень.
 
@@ -19,12 +21,14 @@ Order Tracking System
    ```bash
    git clone git@github.com:WhiteVolf/ordertracking.git
    cd ordertracking
+   ```
 
 2. **Встановлення залежностей**:
     ```bash
     composer install
+    ```
 
-3. **Конфігурація середовища**: 
+3. **Конфігурація середовища**:
     Створіть .env файл, скопіювавши .env.example, та налаштуйте такі параметри:
 
     ```env
@@ -36,26 +40,31 @@ Order Tracking System
     REDIS_HOST=127.0.0.1
     REDIS_PASSWORD=null
     REDIS_PORT=6379
+    ```
 
 4. **Генеруйте новий APP_KEY**:
     ```bash
     php artisan key:generate
+    ```
 
 5. **Міграції та сидери**:
     Створіть таблиці бази даних та додайте необхідні сидери:
     ```bash
     php artisan migrate --seed
+    ```
 
-6. **Laravel Horizon**: 
+6. **Laravel Horizon**:
     Запустіть Horizon для моніторингу черг:
     ```bash
     php artisan horizon
+    ```
 
 ## Запуск проєкту
 
     Для локального запуску сервера виконайте:
     ```bash
     php artisan serve
+    ```
 
 ## API Роутинг
     POST /api/auth/register – Реєстрація нового користувача
@@ -65,13 +74,21 @@ Order Tracking System
     GET /api/orders/{id} – Отримати конкретне замовлення
     PUT /api/orders/{id} – Оновити замовлення
     DELETE /api/orders/{id} – Видалити замовлення
-    GET /api/orders/export/{format} – Експорт замовлень у форматі CSV або Excel (format = csv або excel)
+    GET /api/orders/export-excel – Експорт замовлень у форматі Excel
+    GET /api/orders/export-csv – Експорт замовлень у форматі CSV
+    GET /api/orders/export-pdf – Експорт замовлень у форматі PDF
+    GET /api/products – Отримати список товарів
+    POST /api/products – Створити новий товар
+    GET /api/products/{id} – Отримати конкретний товар
+    PUT /api/products/{id} – Оновити товар
+    DELETE /api/products/{id} – Видалити товар
 
 ## Тестування
 
     Для запуску юніт тестів виконайте:
     ```bash
     php artisan test
+    ```
     Тести охоплюють всі ключові функції, включаючи авторизацію, CRUD-операції для замовлень, експорт і сповіщення.
 
 ## Horizon
@@ -79,7 +96,7 @@ Order Tracking System
     http://localhost/horizon
 
 ## Експорт Замовлень
-    Для експорту замовлень API підтримує формат CSV та Excel. Просто виконайте запит на /api/orders/export/csv або /api/orders/export/excel.
+    Для експорту замовлень API підтримує формат CSV, Excel та PDF. Просто виконайте запит на /api/orders/export/csv, /api/orders/export/excel або /api/orders/export/pdf.
 
 ## Сповіщення
     Система використовує Reverb для сповіщень. Сповіщення надсилаються при створенні замовлення або зміні його статусу.
