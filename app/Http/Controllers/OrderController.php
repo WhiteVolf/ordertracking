@@ -166,6 +166,7 @@ class OrderController extends Controller
             'order_number' => 'required|string|unique:orders,order_number',
             'amount' => 'required|numeric',
             'status' => 'required|in:new,processing,shipped,delivered',
+            'quantity' => 'required|integer|min:1|max:5',
         ]);
 
         $order = Order::create([
@@ -174,6 +175,7 @@ class OrderController extends Controller
             'order_number' => $request->order_number,
             'amount' => $request->amount,
             'status' => $request->status,
+            'quantity' => $request->quantity,
         ]);
 
         // Відправка сповіщення про створення замовлення
@@ -234,9 +236,10 @@ class OrderController extends Controller
             'product_id' => 'integer|exists:products,id',
             'amount' => 'numeric',
             'status' => 'in:new,processing,shipped,delivered',
+            'quantity' => 'integer|min:1|max:5',
         ]);
 
-        $order->update($request->only(['product_id', 'amount', 'status']));
+        $order->update($request->only(['product_id', 'amount', 'status', 'quantity']));
 
         // Відправка сповіщення про зміну статусу, якщо він змінений
         if ($request->status && $request->status !== $oldStatus) {

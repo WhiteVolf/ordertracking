@@ -52,6 +52,7 @@ class OrderControllerTest extends TestCase
             'order_number' => 'ORD123',
             'amount' => 100,
             'status' => 'new',
+            'quantity' => 2,
         ];
 
         $response = $this->postJson('/api/orders', $orderData);
@@ -85,6 +86,7 @@ class OrderControllerTest extends TestCase
             'product_id' => $this->product->id,
             'amount' => 150,
             'status' => 'shipped',
+            'quantity' => 3,
         ];
 
         $response = $this->putJson("/api/orders/{$order->id}", $updatedData);
