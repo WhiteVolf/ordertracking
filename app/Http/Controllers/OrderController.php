@@ -57,7 +57,7 @@ class OrderController extends Controller
      *         in="query",
      *         description="Filter orders by product",
      *         required=false,
-     *         @OA\Schema(type="integer")
+     *         @OA\Schema(type="string", format="uuid")
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -111,7 +111,7 @@ class OrderController extends Controller
      *         in="path",
      *         description="Order ID",
      *         required=true,
-     *         @OA\Schema(type="integer")
+     *         @OA\Schema(type="string", format="uuid")
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -144,7 +144,7 @@ class OrderController extends Controller
      *         required=true,
      *         @OA\JsonContent(
      *             required={"product_id", "order_number", "amount", "status"},
-     *             @OA\Property(property="product_id", type="integer", example=1),
+     *             @OA\Property(property="product_id", type="string", format="uuid"),
      *             @OA\Property(property="order_number", type="string", example="ORD123"),
      *             @OA\Property(property="amount", type="number", example=100),
      *             @OA\Property(property="status", type="string", example="new")
@@ -162,7 +162,7 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'product_id' => 'required|exists:products,id',
+            'product_id' => 'required|uuid|exists:products,id',
             'order_number' => 'required|string|unique:orders,order_number',
             'amount' => 'required|numeric',
             'status' => 'required|in:new,processing,shipped,delivered',
@@ -202,12 +202,12 @@ class OrderController extends Controller
      *         in="path",
      *         description="Order ID",
      *         required=true,
-     *         @OA\Schema(type="integer")
+     *         @OA\Schema(type="string", format="uuid")
      *     ),
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             @OA\Property(property="product_id", type="integer", example=1),
+     *             @OA\Property(property="product_id", type="string", format="uuid"),
      *             @OA\Property(property="amount", type="number", example=150),
      *             @OA\Property(property="status", type="string", example="shipped")
      *         )
@@ -233,7 +233,7 @@ class OrderController extends Controller
         $oldStatus = $order->status;
 
         $request->validate([
-            'product_id' => 'integer|exists:products,id',
+            'product_id' => 'uuid|exists:products,id',
             'amount' => 'numeric',
             'status' => 'in:new,processing,shipped,delivered',
             'quantity' => 'integer|min:1|max:5',
@@ -266,7 +266,7 @@ class OrderController extends Controller
      *         in="path",
      *         description="Order ID",
      *         required=true,
-     *         @OA\Schema(type="integer")
+     *         @OA\Schema(type="string", format="uuid")
      *     ),
      *     @OA\Response(
      *         response=200,
