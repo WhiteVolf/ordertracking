@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CartController;
 
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
@@ -17,6 +18,10 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/orders/export-excel', [OrderController::class, 'exportExcel']);
     Route::get('/orders/export-csv', [OrderController::class, 'exportCsv']);
     Route::get('/orders/export-pdf', [OrderController::class, 'exportPdf']);
+    Route::get('cart', [CartController::class, 'index']);
+    Route::post('cart/add', [CartController::class, 'add']);
+    Route::delete('cart/{item}', [CartController::class, 'remove']);
+    Route::post('cart/checkout', [CartController::class, 'checkout']);
     Route::get('products', [ProductController::class, 'index']);
     Route::post('products', [ProductController::class, 'store']);
     Route::get('products/{product}', [ProductController::class, 'show']);

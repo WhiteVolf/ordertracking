@@ -17,6 +17,7 @@ class Order extends Model
         'order_number',
         'amount',
         'status',
+        'quantity',
     ];
 
     // Статуси замовлення
