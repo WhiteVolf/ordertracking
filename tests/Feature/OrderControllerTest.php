@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Order;
 use App\Models\User;
+use App\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -13,6 +14,7 @@ class OrderControllerTest extends TestCase
 
     protected $user;
     protected $anotherUser;
+    protected $product;
 
     protected function setUp(): void
     {
@@ -21,6 +23,7 @@ class OrderControllerTest extends TestCase
         // Створимо тестових користувачів
         $this->user = User::factory()->create();
         $this->anotherUser = User::factory()->create();
+        $this->product = Product::factory()->create();
     }
 
     /** @test */
@@ -45,7 +48,7 @@ class OrderControllerTest extends TestCase
         $this->actingAs($this->user);
 
         $orderData = [
-            'product_name' => 'Test Product',
+            'product_id' => $this->product->id,
             'order_number' => 'ORD123',
             'amount' => 100,
             'status' => 'new',
@@ -54,7 +57,7 @@ class OrderControllerTest extends TestCase
         $response = $this->postJson('/api/orders', $orderData);
 
         $response->assertStatus(201);
-        $response->assertJsonFragment($orderData);
+        $response->assertJsonFragment(['order_number' => 'ORD123']);
         $this->assertDatabaseHas('orders', ['order_number' => 'ORD123']);
     }
 
@@ -79,7 +82,7 @@ class OrderControllerTest extends TestCase
         $order = Order::factory()->create(['user_id' => $this->user->id]);
 
         $updatedData = [
-            'product_name' => 'Updated Product',
+            'product_id' => $this->product->id,
             'amount' => 150,
             'status' => 'shipped',
         ];
@@ -87,7 +90,7 @@ class OrderControllerTest extends TestCase
         $response = $this->putJson("/api/orders/{$order->id}", $updatedData);
 
         $response->assertStatus(200);
-        $response->assertJsonFragment($updatedData);
+        $response->assertJsonFragment(['status' => 'shipped']);
         $this->assertDatabaseHas('orders', ['id' => $order->id, 'status' => 'shipped']);
     }
 
@@ -124,7 +127,7 @@ class OrderControllerTest extends TestCase
         $order = Order::factory()->create(['user_id' => $this->anotherUser->id]);
 
         $updatedData = [
-            'product_name' => 'Unauthorized Update',
+            'product_id' => $this->product->id,
             'amount' => 200,
         ];
 

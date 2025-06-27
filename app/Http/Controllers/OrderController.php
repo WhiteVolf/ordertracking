@@ -53,11 +53,11 @@ class OrderController extends Controller
      *         @OA\Schema(type="number")
      *     ),
      *     @OA\Parameter(
-     *         name="product_name",
+     *         name="product_id",
      *         in="query",
-     *         description="Filter orders by product name",
+     *         description="Filter orders by product",
      *         required=false,
-     *         @OA\Schema(type="string")
+     *         @OA\Schema(type="integer")
      *     ),
      *     @OA\Response(
      *         response=200,
@@ -89,9 +89,9 @@ class OrderController extends Controller
             $query->where('amount', '<=', $request->max_amount);
         }
 
-        // Додаємо фільтрацію за назвою продукту
-        if ($request->has('product_name')) {
-            $query->where('product_name', 'like', '%' . $request->product_name . '%');
+        // Додаємо фільтрацію за товаром
+        if ($request->has('product_id')) {
+            $query->where('product_id', $request->product_id);
         }
 
         // Додаємо пагінацію з кількістю записів на сторінку
@@ -143,8 +143,8 @@ class OrderController extends Controller
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             required={"product_name", "order_number", "amount", "status"},
-     *             @OA\Property(property="product_name", type="string", example="Test Product"),
+     *             required={"product_id", "order_number", "amount", "status"},
+     *             @OA\Property(property="product_id", type="integer", example=1),
      *             @OA\Property(property="order_number", type="string", example="ORD123"),
      *             @OA\Property(property="amount", type="number", example=100),
      *             @OA\Property(property="status", type="string", example="new")
@@ -162,7 +162,7 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'product_name' => 'required|string|max:255',
+            'product_id' => 'required|exists:products,id',
             'order_number' => 'required|string|unique:orders,order_number',
             'amount' => 'required|numeric',
             'status' => 'required|in:new,processing,shipped,delivered',
@@ -170,7 +170,7 @@ class OrderController extends Controller
 
         $order = Order::create([
             'user_id' => Auth::id(),
-            'product_name' => $request->product_name,
+            'product_id' => $request->product_id,
             'order_number' => $request->order_number,
             'amount' => $request->amount,
             'status' => $request->status,
@@ -205,7 +205,7 @@ class OrderController extends Controller
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
-     *             @OA\Property(property="product_name", type="string", example="Updated Product"),
+     *             @OA\Property(property="product_id", type="integer", example=1),
      *             @OA\Property(property="amount", type="number", example=150),
      *             @OA\Property(property="status", type="string", example="shipped")
      *         )
@@ -231,12 +231,12 @@ class OrderController extends Controller
         $oldStatus = $order->status;
 
         $request->validate([
-            'product_name' => 'string|max:255',
+            'product_id' => 'integer|exists:products,id',
             'amount' => 'numeric',
             'status' => 'in:new,processing,shipped,delivered',
         ]);
 
-        $order->update($request->only(['product_name', 'amount', 'status']));
+        $order->update($request->only(['product_id', 'amount', 'status']));
 
         // Відправка сповіщення про зміну статусу, якщо він змінений
         if ($request->status && $request->status !== $oldStatus) {

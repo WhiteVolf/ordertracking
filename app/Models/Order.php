@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Product;
 
 class Order extends Model
 {
@@ -12,7 +13,7 @@ class Order extends Model
     // Поля, які можуть бути масово заповнені
     protected $fillable = [
         'user_id',
-        'product_name',
+        'product_id',
         'order_number',
         'amount',
         'status',
@@ -30,6 +31,14 @@ class Order extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Зв'язок замовлення з товаром (багато до одного)
+     */
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
     }
 
     /**

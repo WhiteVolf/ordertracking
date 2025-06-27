@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ProductController;
 
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
@@ -16,4 +17,9 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/orders/export-excel', [OrderController::class, 'exportExcel']);
     Route::get('/orders/export-csv', [OrderController::class, 'exportCsv']);
     Route::get('/orders/export-pdf', [OrderController::class, 'exportPdf']);
+    Route::get('products', [ProductController::class, 'index']);
+    Route::post('products', [ProductController::class, 'store']);
+    Route::get('products/{product}', [ProductController::class, 'show']);
+    Route::put('products/{product}', [ProductController::class, 'update']);
+    Route::delete('products/{product}', [ProductController::class, 'destroy']);
 });
