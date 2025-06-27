@@ -17,7 +17,6 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/orders/export-excel', [OrderController::class, 'exportExcel']);
     Route::get('/orders/export-csv', [OrderController::class, 'exportCsv']);
     Route::get('/orders/export-pdf', [OrderController::class, 'exportPdf']);
-
     Route::get('products', [ProductController::class, 'index']);
     Route::post('products', [ProductController::class, 'store']);
     Route::get('products/{product}', [ProductController::class, 'show']);
