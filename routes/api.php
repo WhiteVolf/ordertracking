@@ -27,4 +27,7 @@ Route::middleware('auth:api')->group(function () {
     Route::get('products/{product}', [ProductController::class, 'show']);
     Route::put('products/{product}', [ProductController::class, 'update']);
     Route::delete('products/{product}', [ProductController::class, 'destroy']);
+
+    // Analytics
+    Route::get('analytics', [\App\Http\Controllers\AnalyticsController::class, 'summary']);
 });
