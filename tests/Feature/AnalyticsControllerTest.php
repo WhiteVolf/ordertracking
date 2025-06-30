@@ -35,11 +35,17 @@ class AnalyticsControllerTest extends TestCase
 
         $this->actingAs($user);
 
-        $response = $this->getJson('/api/analytics');
+        $response = $this->getJson('/api/analytics/sales');
 
         $response->assertStatus(200);
         $response->assertJsonStructure([
             'product_sales' => [['product_id', 'name', 'total_quantity', 'total_amount']],
+        ]);
+
+        $response = $this->getJson('/api/analytics/orders');
+
+        $response->assertStatus(200);
+        $response->assertJsonStructure([
             'user_orders' => [['user_id', 'name', 'total_orders', 'total_amount']],
         ]);
     }
@@ -71,7 +77,7 @@ class AnalyticsControllerTest extends TestCase
         $from = now()->subDays(3)->toDateString();
         $to = now()->toDateString();
 
-        $response = $this->getJson("/api/analytics?from={$from}&to={$to}");
+        $response = $this->getJson("/api/analytics/sales?from={$from}&to={$to}");
 
         $response->assertStatus(200);
         $response->assertJsonFragment([

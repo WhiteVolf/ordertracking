@@ -30,4 +30,6 @@ Route::middleware('auth:api')->group(function () {
 
     // Analytics
     Route::get('analytics', [\App\Http\Controllers\AnalyticsController::class, 'summary']);
+    Route::get('analytics/sales', [\App\Http\Controllers\AnalyticsController::class, 'sales']);
+    Route::get('analytics/orders', [\App\Http\Controllers\AnalyticsController::class, 'orders']);
 });
